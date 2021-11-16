@@ -1,0 +1,30 @@
+import Java.sql.*;
+
+public class Bind {
+
+    public static void main(String[] args) throws SQLException {
+
+        String url = "jdbc:postgresql://localhost/postgres?user=postgres&password=postgres";
+        Connection conn = DriverManager.getConnection(url);
+
+        String sql = "SELECT paymentType, amount FROM employee WHERE name = 'bob' AND paymentType=?";
+        System.out.println(sql);
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, args[0]);
+
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            System.out.println(rs.getString("paymentType") + " " + rs.getLong("amount"));
+        }
+    }
+}
+
+
+c:\temp>Java Bind salary
+SELECT paymentType, amount FROM employee WHERE name = 'bob' AND paymentType=?
+
+
+c:\temp>Java Inject "salary' OR 'a'!='b"
+SELECT paymentType, amount FROM employee WHERE name = 'bob' AND paymentType='salary' OR 'a'!='b'
